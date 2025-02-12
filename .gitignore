@@ -1,0 +1,53 @@
+# Ignore Visual Studio specific files
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vs/
+*.vscode/
+
+# Ignore build and output directories
+bin/
+obj/
+out/
+publish/
+release/
+Debug/
+Release/
+TestResults/
+
+# Ignore logs and cache
+*.log
+*.cache
+*.ldb
+
+# Ignore database migrations and local databases
+Migrations/
+*.mdf
+*.ldf
+*.sqlite
+*.db
+
+# Ignore dependency folders
+node_modules/
+bower_components/
+wwwroot/lib/
+
+# Ignore compiled DLLs and executables
+*.dll
+*.exe
+*.pdb
+*.appx
+*.appxbundle
+
+# Ignore secrets and configuration files
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+secrets.json
+
+# Ignore Azure related files
+*.publishsettings
+*.azure/
+AzureAppService/
