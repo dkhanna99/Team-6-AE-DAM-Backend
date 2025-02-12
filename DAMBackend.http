@@ -1,6 +1,0 @@
-@DAMBackend_HostAddress = http://localhost:5146
-
-GET {{DAMBackend_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
