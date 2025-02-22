@@ -42,7 +42,6 @@ wwwroot/lib/
 *.appxbundle
 
 # Ignore secrets and configuration files
-appsettings.json
 appsettings.Development.json
 appsettings.Production.json
 secrets.json
