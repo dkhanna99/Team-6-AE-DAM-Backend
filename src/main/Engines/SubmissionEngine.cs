@@ -1,9 +1,17 @@
 namespace DAMBackend.SubmissionEngine
+
 {
-    public class SubmissionEngine
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    public class SubmissionEngine : ControllerBase
     {
         // private ExifTool _exifTool;
         // private ExifToolWrapper.ExifTool _exifTool;
+
+        private readonly string _uploadPath = "../../../TestOutput"; //hard coded value
 
         public SubmissionEngine()
         {
@@ -13,21 +21,77 @@ namespace DAMBackend.SubmissionEngine
         }
       
         // Method to upload files, extracts EXIF metadata for each file
-        public void UploadFiles(List<string> listOfImages)
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadFiles([FromForm] List<IFormFile> files)
         {
-            // Stub for uploading files and extracting EXIF metadata
-            // TODO:
-            // - Check if no files are added or file count exceeds 100
-            // - Validate supported formats
-            // - Extract EXIF data to put into File fields on daabase or leave NULL for missing fields
-            // Future implementation required for each file format handler
 
-            foreach (var file in listOfImages)
+            // Ensure the upload directory exists
+            // if (!Directory.Exists(_uploadPath))
+            // {
+            //     Directory.CreateDirectory(_uploadPath);
+            // }
+
+            if (!Directory.Exists(_uploadPath))
             {
-                // TODO: Call respective helper based on file type (jpeg, png, mp4, etc.)
-                // Example: HandleJpeg(file);
+                Directory.CreateDirectory(_uploadPath);
+                Console.WriteLine($"Directory created: {_uploadPath}");
             }
+            else
+            {
+                Console.WriteLine($"Directory already exists: {_uploadPath}");
+            }
+
+            // Check if the number of files exceeds 100
+            if (files.Count > 100)
+            {
+                return BadRequest("You can upload a maximum of 100 files at once.");
+            }
+
+            // Validate and process each file
+            foreach (var file in files)
+            {
+                // Validate file size (e.g., 100MB limit)
+                if (file.Length > 100 * 1024 * 1024) // 100MB
+                {
+                    return BadRequest($"File {file.FileName} exceeds the maximum allowed size.");
+                }
+
+                // Validate file extension (e.g., allow only images and videos)
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".mp4", ".raw", ".arw" };
+                // to be supported: .tiff, .jpg, .gif, .mov 
+                var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    return BadRequest($"File {file.FileName} has an unsupported file type.");
+                }
+
+                // Save the file to the upload directory
+                // var filePath = Path.GetTempFileName();
+                // Console.WriteLine(filePath);
+                using (var stream = System.IO.File.Create($"../../../TestOutput/{file.FileName}"))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+
+            return Ok("All files uploaded successfully.");
         }
+
+        // public void UploadFiles(List<string> listOfImages)
+        // {
+        //     // Stub for uploading files and extracting EXIF metadata
+        //     // TODO:
+        //     // - Check if no files are added or file count exceeds 100
+        //     // - Validate supported formats
+        //     // - Extract EXIF data to put into File fields on daabase or leave NULL for missing fields
+        //     // Future implementation required for each file format handler
+
+        //     foreach (var file in listOfImages)
+        //     {
+        //         // TODO: Call respective helper based on file type (jpeg, png, mp4, etc.)
+        //         // Example: HandleJpeg(file);
+        //     }
+        // }
 
         // Helper functions for each file format
         private void HandleJpeg(string file)
