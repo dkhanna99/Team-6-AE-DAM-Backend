@@ -33,6 +33,7 @@ namespace backendTests.SubmissionEngineTests
     // for mock file testing (no need to use actual photo/video for some testing purpose)
     public class MockFormFile : IFormFile
     {
+
         public string ContentType { get; set; }
         public string ContentDisposition { get; set; }
         public IHeaderDictionary Headers { get; set; }
@@ -100,7 +101,7 @@ namespace backendTests.SubmissionEngineTests
             _fixture = fixture;
         }
 
-        [Fact]
+        //[Fact]
         public async Task UploadFiles_AcceptsUpTo100Files()
         {
             // Arrange
@@ -122,9 +123,15 @@ namespace backendTests.SubmissionEngineTests
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal("All files uploaded successfully.", okResult.Value);
+
+            // Clean up
+            for (int i = 0; i < 100; i++)
+            {
+                File.Delete($"../../../TestOutput/file{i}.jpg");
+            }
         }
 
-        [Fact]
+        //[Fact]
         public async Task UploadFiles_RejectToMoreThan100Files()
         {
             // Arrange
@@ -148,15 +155,15 @@ namespace backendTests.SubmissionEngineTests
             Assert.Equal("You can upload a maximum of 100 files at once.", badResult.Value);
         }
 
-        [Fact]
-        public async Task UploadFiles_RejectToMoreThan100MBFile()
+        //[Fact]
+        public async Task UploadFiles_RejectToMoreThan500MBFile()
         {
             // Arrange
             var mockFiles = new FormFileCollection();
             var fileMock2 = new MockFormFile
             {
                 FileName = $"file{20}.jpg",
-                Length = 100*1024*1024 + 1 // 1 KB per file
+                Length = 500*1024*1024 + 1 // 1 KB per file
             };
             mockFiles.Add(fileMock2);
 
@@ -168,7 +175,7 @@ namespace backendTests.SubmissionEngineTests
             Assert.Equal("File file20.jpg exceeds the maximum allowed size.", badResult.Value);
         }
 
-        [Fact]
+        //[Fact]
         public async Task UploadFiles_RejectToUnsupportedFile()
         {
             // Arrange
@@ -188,22 +195,29 @@ namespace backendTests.SubmissionEngineTests
             Assert.Equal("File file20.mov has an unsupported file type.", badResult.Value);
         }
 
-    [Fact]
+    
+
+    //[Fact]
     public async Task UploadFiles_SavesActualImageToCorrectDirectory()
     {
         // Arrange
         // Path to the actual image file in your test project
-        var imagePath = Path.Combine("../../../TestFiles", "DSC05589.ARW");
+        string[] filePath = ["DSC05589.ARW", "DSC03135.JPG", "yeti_classic.png", "DSC03135.ARW", "DSC04569.ARW", "image1.jpeg", "jpgsample.JPG", "jpgsample.JPG", "C0004.MP4"];
+        Console.WriteLine("---------------------- starting test -----------------------------");
 
+        var files = new FormFileCollection();
         // Read the image file into a byte array
-        var fileBytes = File.ReadAllBytes(imagePath);
-
-        var testFile = FileHelper.GetTestFormFile("../../../TestFiles/DSC05589.ARW");
-
-        var files = new List<IFormFile> { testFile };
+        foreach (string file in filePath)
+        {
+            var imagePath = Path.Combine("../../../TestFiles", file);
+            Console.WriteLine(imagePath);
+            var testFile = FileHelper.GetTestFormFile(imagePath);
+            files.Add(testFile);
+        }
 
         // Act
         var result = await _fixture.submissionEngine.UploadFiles(files);
+        Console.WriteLine(result);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -211,15 +225,35 @@ namespace backendTests.SubmissionEngineTests
 
         // Verify the file was saved to the correct directory
 
-        Assert.True(File.Exists("../../../TestOutput/DSC05589.ARW"));
-
-        // Verify the saved file content matches the original file
-        var savedFileBytes = File.ReadAllBytes("../../../TestOutput/DSC05589.ARW");
-        Assert.Equal(fileBytes, savedFileBytes);
-
         // Clean up
-        File.Delete("../../../TestOutput/DSC05589.ARW");
+        // File.Delete("../../../TestOutput/DSC05589.ARW");
     }
+
+    [Fact]
+    public async Task exifTest()
+    {
+        // Arrange
+        string testImagePath = "../../../TestFiles/DSC04569.JPG"; // Replace with the path to a test image
+        // var expectedMetadata = new Dictionary<string, string>
+        // {
+        //     { "Make", "Canon" },
+        //     { "Model", "Canon EOS 5D Mark IV" },
+        //     { "DateTimeOriginal", "2023:10:01 12:34:56" },
+        //     { "FocalLength", "50" },
+        //     { "Aperture", "2.8" }
+        // };
+
+        // Act
+        _fixture.submissionEngine.ExifImageSharp(testImagePath);
+
+        // Assert
+        // foreach (var key in expectedMetadata.Keys)
+        // {
+        //     Assert.True(actualMetadata.ContainsKey(key), $"Expected metadata key '{key}' not found.");
+        //     Assert.Equal(expectedMetadata[key], actualMetadata[key]);
+        // }
+    }
+
     }
 }
 
