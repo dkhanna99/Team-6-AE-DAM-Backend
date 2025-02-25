@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text;
+using DAMBackend.Models;
 using DAMBackend.SubmissionEngine;
+using File = System.IO.File;
 
 namespace backendTests.SubmissionEngineTests 
 {   
@@ -163,7 +165,7 @@ namespace backendTests.SubmissionEngineTests
             var fileMock2 = new MockFormFile
             {
                 FileName = $"file{20}.jpg",
-                Length = 500*1024*1024 + 1 // 1 KB per file
+                Length = 500 * 1024 * 1024 + 1 // 1 KB per file
             };
             mockFiles.Add(fileMock2);
 
@@ -195,65 +197,88 @@ namespace backendTests.SubmissionEngineTests
             Assert.Equal("File file20.mov has an unsupported file type.", badResult.Value);
         }
 
-    
 
-    //[Fact]
-    public async Task UploadFiles_SavesActualImageToCorrectDirectory()
-    {
-        // Arrange
-        // Path to the actual image file in your test project
-        string[] filePath = ["DSC05589.ARW", "DSC03135.JPG", "yeti_classic.png", "DSC03135.ARW", "DSC04569.ARW", "image1.jpeg", "jpgsample.JPG", "jpgsample.JPG", "C0004.MP4"];
-        Console.WriteLine("---------------------- starting test -----------------------------");
 
-        var files = new FormFileCollection();
-        // Read the image file into a byte array
-        foreach (string file in filePath)
+        //[Fact]
+        public async Task UploadFiles_SavesActualImageToCorrectDirectory()
         {
-            var imagePath = Path.Combine("../../../TestFiles", file);
-            Console.WriteLine(imagePath);
-            var testFile = FileHelper.GetTestFormFile(imagePath);
-            files.Add(testFile);
+            // Arrange
+            // Path to the actual image file in your test project
+            string[] filePath =
+            [
+                "DSC05589.ARW", "DSC03135.JPG", "yeti_classic.png", "DSC03135.ARW", "DSC04569.ARW", "image1.jpeg",
+                "jpgsample.JPG", "jpgsample.JPG", "C0004.MP4"
+            ];
+
+            var files = new FormFileCollection();
+            // Read the image file into a byte array
+            foreach (string file in filePath)
+            {
+                var imagePath = Path.Combine("../../../TestFiles", file);
+                Console.WriteLine(imagePath);
+                var testFile = FileHelper.GetTestFormFile(imagePath);
+                files.Add(testFile);
+            }
+
+            // Act
+            var result = await _fixture.submissionEngine.UploadFiles(files);
+            Console.WriteLine(result);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("All files uploaded successfully.", okResult.Value);
+
+            // Verify the file was saved to the correct directory
+
+            // Clean up
+            // File.Delete("../../../TestOutput/DSC05589.ARW");
         }
 
-        // Act
-        var result = await _fixture.submissionEngine.UploadFiles(files);
-        Console.WriteLine(result);
+        [Fact]
+        public async Task exifTest()
+        {
+            // Arrange
+            string[] filePath =
+            [
+                "DSC05589.ARW", "DSC03135.JPG", "yeti_classic.png", "DSC03135.ARW", "DSC04569.ARW", "image1.jpeg",
+                "jpgsample.JPG", "jpgsample.JPG"
+            ];
 
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal("All files uploaded successfully.", okResult.Value);
+            var testImagePath = Path.Combine("../../../TestFiles", filePath[5]);
+            // Act
+            _fixture.submissionEngine.PrintImageMetadata(testImagePath);
+        }
 
-        // Verify the file was saved to the correct directory
+        [Fact]
+        public void ExtractExifMetadata_ShouldReturnCorrectFileModel()
+        {
+            string[] filePath =
+            [
+                "DSC05589.ARW", "DSC03135.JPG", "yeti_classic.png", "DSC03135.ARW", "DSC04569.ARW", "image1.jpeg",
+                "jpgsample.JPG", "jpgsample.JPG"
+            ];
 
-        // Clean up
-        // File.Delete("../../../TestOutput/DSC05589.ARW");
-    }
+            var testImagePath = Path.Combine("../../../TestFiles", filePath[5]);
+            // Arrange
 
-    [Fact]
-    public async Task exifTest()
-    {
-        // Arrange
-        string testImagePath = "../../../TestFiles/DSC04569.JPG"; // Replace with the path to a test image
-        // var expectedMetadata = new Dictionary<string, string>
-        // {
-        //     { "Make", "Canon" },
-        //     { "Model", "Canon EOS 5D Mark IV" },
-        //     { "DateTimeOriginal", "2023:10:01 12:34:56" },
-        //     { "FocalLength", "50" },
-        //     { "Aperture", "2.8" }
-        // };
+            // Act
+            FileModel fileModel = _fixture.submissionEngine.ExtractExifMetadata(testImagePath);
 
-        // Act
-        _fixture.submissionEngine.ExifImageSharp(testImagePath);
+            // Assert
+            Assert.NotNull(fileModel); // Ensure the object is not null
+            Assert.Equal("image.jpg", fileModel.Name); // Ensure the Name is correct
+            Assert.Equal(".jpg", fileModel.Extension); // Ensure the Extension is correct
+            Assert.Equal(testImagePath, fileModel.OriginalPath); // Ensure the OriginalPath is correct
+            Assert.True(fileModel.PixelWidth > 0); // Ensure PixelWidth is greater than 0
+            Assert.True(fileModel.PixelHeight > 0); // Ensure PixelHeight is greater than 0
 
-        // Assert
-        // foreach (var key in expectedMetadata.Keys)
-        // {
-        //     Assert.True(actualMetadata.ContainsKey(key), $"Expected metadata key '{key}' not found.");
-        //     Assert.Equal(expectedMetadata[key], actualMetadata[key]);
-        // }
-    }
+            // Check if optional EXIF fields are null if not found in the image
+            Assert.Null(fileModel.GPSLat);
+            Assert.Null(fileModel.GPSLon);
+            Assert.Null(fileModel.GPSAlt);
+            Assert.Null(fileModel.DateTimeOriginal);
 
+        }
     }
 }
 

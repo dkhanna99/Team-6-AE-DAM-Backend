@@ -9,12 +9,12 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.Processing;
-using ExifLibNet;
+using DAMBackend.Models;
+
 
 
 
 namespace DAMBackend.SubmissionEngine
-
 {
     public class SubmissionEngine : ControllerBase
     {
@@ -75,70 +75,146 @@ namespace DAMBackend.SubmissionEngine
 
             return Ok("All files uploaded successfully.");
         }
+        
+        public FileModel ExtractExifMetadata(string imagePath)
+        {
+            var fileModel = new FileModel
+            {
+                Name = System.IO.Path.GetFileName(imagePath),
+                Extension = System.IO.Path.GetExtension(imagePath),
+                OriginalPath = imagePath,
+                ThumbnailPath = "path/to/thumbnail", // Provide actual thumbnail path
+                ViewPath = "path/to/view", // Provide actual view path
+                PixelWidth = 0, // Extract if needed
+                PixelHeight = 0, // Extract if needed
+                GPSLat = null,
+                GPSLon = null,
+                GPSAlt = null,
+                DateTimeOriginal = null,
+                Make = null,
+                Model = null,
+                FocalLength = null,
+                Aperture = null,
+                Copyright = null,
+                Tags = null,
+                ProjectId = null
+            };
+    
+            // Load the image
+            using (Image image = Image.Load(imagePath))
+            {
+                // EXIF Metadata
+                if (image.Metadata.ExifProfile != null)
+                {
+                    // Extract EXIF data
+                    var exif = image.Metadata.ExifProfile;
+    
+                    // DateTimeOriginal
+                    var dateTimeOriginalTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.DateTimeOriginal);
+                    if (dateTimeOriginalTag != null)
+                    {
+                        fileModel.DateTimeOriginal = dateTimeOriginalTag.GetValue() as DateTime?;
+                    }
+    
+                    // GPS data
+                    var gpsLatTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSLatitude);
+                    if (gpsLatTag != null)
+                    {
+                        fileModel.GPSLat = (decimal?)((Rational[])gpsLatTag.GetValue())?.FirstOrDefault().ToDouble();
+                    }
+    
+                    var gpsLonTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSLongitude);
+                    if (gpsLonTag != null)
+                    {
+                        fileModel.GPSLon = (decimal?)((Rational[])gpsLonTag.GetValue())?.FirstOrDefault().ToDouble();
+                    }
+    
+                    var gpsAltTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSAltitude);
+                    if (gpsAltTag != null)
+                    {
+                        fileModel.GPSAlt = (decimal?)((Rational[])gpsAltTag.GetValue())?.FirstOrDefault().ToDouble();
+                    }
+    
+                    // Make and Model
+                    var makeTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Make);
+                    if (makeTag != null)
+                    {
+                        fileModel.Make = makeTag.GetValue()?.ToString();
+                    }
+    
+                    var modelTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Model);
+                    if (modelTag != null)
+                    {
+                        fileModel.Model = modelTag.GetValue()?.ToString();
+                    }
+    
+                    // Focal Length
+                    var focalLengthTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.FocalLength);
+                    if (focalLengthTag != null)
+                    {
+                        fileModel.FocalLength = Convert.ToInt32(focalLengthTag.GetValue());
+                    }
+    
+                    // Aperture
+                    var apertureTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.ApertureValue);
+                    if (apertureTag != null)
+                    {
+                        fileModel.Aperture = Convert.ToSingle(apertureTag.GetValue());
+                    }
+    
+                    // Copyright
+                    var copyrightTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Copyright);
+                    if (copyrightTag != null)
+                    {
+                        fileModel.Copyright = copyrightTag.GetValue()?.ToString();
+                    }
+                }
+    
+                // Set Pixel Width and Height
+                fileModel.PixelWidth = image.Width;
+                fileModel.PixelHeight = image.Height;
+            }
+    
+            return fileModel;
+        }
 
-        // public IActionResult ExtractExifData([FromForm] List<IFormFile> files)
-        // {
-        //     if (files == null || files.Count == 0)
-        //     {
-        //         return BadRequest("No files were uploaded.");
-        //     }
 
-        //     var exifDataList = new List<object>();
+        public  void PrintImageMetadata(string imagePath)
+        {
+            // Load the image
+            using (Image image = Image.Load(imagePath))
+            {
+                Console.WriteLine($"Image loaded with dimensions: {image.Width}x{image.Height}");
 
-        //     foreach (var file in files)
-        //     {
-        //         if (file.Length > 0)
-        //         {
-        //             using var stream = file.OpenReadStream();
-        //             using var image = Image.Load(stream); // Load image using ImageSharp
-
-        //             // Get image metadata (EXIF, IPTC, XMP, etc.)
-        //             var metadata = image.Metadata;
-
-        //             var exifData = metadata.ExifProfile; // Extract EXIF profile if available
-
-        //             if (exifData != null)
-        //             {
-        //                 var extractedExif = new Dictionary<string, string>();
-
-        //                 foreach (var value in exifData.Values)
-        //                 {
-        //                     extractedExif[value.Tag.ToString()] = value.GetValue().ToString();
-        //                 }
-
-        //                 exifDataList.Add(new
-        //                 {
-        //                     FileName = file.FileName,
-        //                     Exif = extractedExif
-        //                 });
-        //             }
-        //             else
-        //             {
-        //                 exifDataList.Add(new
-        //                 {
-        //                     FileName = file.FileName,
-        //                     Exif = "No EXIF data found"
-        //                 });
-        //             }
-        //         }
-        //     }
-
-        //     return Ok(exifDataList);
-        // }
+                // Check for EXIF metadata
+                if (image.Metadata.ExifProfile != null)
+                {
+                    Console.WriteLine("\nEXIF Metadata:");
+                    foreach (var tag in image.Metadata.ExifProfile.Values)
+                    {
+                        Console.WriteLine($"Tag: {tag.Tag}, Value: {tag.GetValue()}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nNo EXIF metadata found in the image.");
+                }
+            }
+        }
 
         // Helper functions for each file format
 
-        public void ExifImageSharp(string file)
-        {
-            // Load the image
-            var exif = new ExifReader(file);
-            var metadata = exif.GetExifTags();
-
-            foreach (var tag in metadata)
-            {
-                Console.WriteLine($"{tag.Key}: {tag.Value}");
-            }
-        }
+        // public void ExifImageSharp(string file)
+        // {
+        //     // Load the image
+        //     var exif = new ExifReader(file);
+        //     var metadata = exif.GetExifTags();
+        //
+        //     foreach (var tag in metadata)
+        //     {
+        //         Console.WriteLine($"{tag.Key}: {tag.Value}");
+        //     }
+        // }
 
         // Extract EXIF data from the file using ExifTool
         private Dictionary<string, string> ExtractExifData(string file)
