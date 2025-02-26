@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using DAMBackend.Data;
+using DAMBackend.Models;
 using backend.auth;
 
 namespace backend.auth

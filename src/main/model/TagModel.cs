@@ -1,7 +1,6 @@
 using Microsoft.Identity.Client;
-using Org.BouncyCastle.Bcpg;
 
-namespace backend.sql
+namespace DAMBackend.Models
 
 {
     public enum Department {
@@ -13,7 +12,7 @@ namespace backend.sql
             Management,
             Other
         }
-    public enum Type {
+    public enum MediaType {
         Photo,
         Video,
         Drawing,
@@ -31,16 +30,16 @@ namespace backend.sql
 
         public required int UserId { get; set; }
 
-        public int ProjectId { get; set; }
+        public Guid ProjectId { get; set; }
 
         public string Phase { get; set; }
         // Ask developers
         
         public Department Dep { get; set; }
 
-        public Type Type { get; set; }
+        public MediaType Type { get; set; }
 
-        public required int FileId { get; set; }
+        public required Guid FileId { get; set; }
 
         public required FileModel File { get; set; }
 

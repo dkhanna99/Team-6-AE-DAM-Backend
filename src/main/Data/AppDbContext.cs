@@ -8,8 +8,10 @@ namespace DAMBackend.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<File> Files { get; set; }
-        public DbSet<Project> Projects { get; set; }
+        public DbSet<UserModel> Users { get; set; }
+        public DbSet<FileModel> Files { get; set; }
+        public DbSet<ProjectModel> Projects { get; set; }
+
+        public DbSet<TagModel> Tags { get; set; }
     }
 }
