@@ -1,12 +1,18 @@
 using System.Data.SqlTypes;
 
-namespace backend.sql
+namespace DAMBackend.Models
+
 
 {
+
+    public enum AccessLevel {
+        Admin,
+        Everyone
+    }
     public class ProjectModel 
 
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public required string Name { get; set; }
 
@@ -14,10 +20,18 @@ namespace backend.sql
 
         public string? location { get; set; }
 
+        public string? imagePath {get; set; }
+
+        public required AccessLevel accessLevel {get; set;}
+
+        public required string Phase { get; set;}
+
         public required DateTime LastUpdate { get; set; }
         // change in ER diagram
 
-        public ICollection<FileModel>? Files { get; set; }
+        public ICollection<FileModel> Files { get; set;} = new HashSet<FileModel>();
+
+        public ICollection<UserModel> Users { get; set;} = new HashSet<UserModel>();
 
     }
 }
