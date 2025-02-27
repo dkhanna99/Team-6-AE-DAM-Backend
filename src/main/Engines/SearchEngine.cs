@@ -1,3 +1,5 @@
+using MySqlConnector;
+
 namespace DAMBackend.SearchEngine
 {
     public class SearchEngine
