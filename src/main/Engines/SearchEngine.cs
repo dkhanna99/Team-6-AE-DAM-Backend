@@ -1,4 +1,9 @@
+
 using MySqlConnector;
+
+using System;
+using System.Collections.Generic;
+
 
 namespace DAMBackend.SearchEngine
 {
@@ -48,23 +53,23 @@ namespace DAMBackend.SearchEngine
         // Helper method to execute the query and update the database
         private void UpdateQuery(string searchType, params object[] parameters)
         {
-            try
-            {
-                using (var connection = new MySqlConnection(connectionString))
-                {
-                    connection.Open();
+            // try
+            // {
+            //     using (var connection = new MySqlConnection(connectionString))
+            //     {
+            //         connection.Open();
 
-                    using (var cmd = new MySqlCommand($"UPDATE search_queries SET {searchType} = @params WHERE query_id = 1", connection))
-                    {
-                        // Execute query or set parameters if needed
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
+            //         using (var cmd = new MySqlCommand($"UPDATE search_queries SET {searchType} = @params WHERE query_id = 1", connection))
+            //         {
+            //             // Execute query or set parameters if needed
+            //             cmd.ExecuteNonQuery();
+            //         }
+            //     }
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine($"An error occurred: {ex.Message}");
+            // }
         }
 
     }
