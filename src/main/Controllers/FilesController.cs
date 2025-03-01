@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DAMBackend.Data;
 using DAMBackend.Models;
-using File = DAMBackend.Models.File;
+using DAMBackend.Model.FileModel;
 
 namespace DAMBackend.Controllers
 {
@@ -24,14 +24,14 @@ namespace DAMBackend.Controllers
 
         // GET: api/Files
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<File>>> GetFiles()
+        public async Task<ActionResult<IEnumerable<FileClass>>> GetFiles()
         {
             return await _context.Files.ToListAsync();
         }
 
         // GET: api/Files/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<File>> GetFile(int id)
+        public async Task<ActionResult<FileClass>> GetFile(int id)
         {
             var @file = await _context.Files.FindAsync(id);
 
@@ -46,12 +46,12 @@ namespace DAMBackend.Controllers
         // PUT: api/Files/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFile(int id, File @file)
+        public async Task<IActionResult> PutFile(int id, FileClass @file)
         {
-            if (id != @file.Id)
-            {
-                return BadRequest();
-            }
+            // if (id != @file.Id) // type missmatch
+            // {
+            //     return BadRequest();
+            // }
 
             _context.Entry(@file).State = EntityState.Modified;
 
@@ -77,7 +77,7 @@ namespace DAMBackend.Controllers
         // POST: api/Files
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<File>> PostFile(File @file)
+        public async Task<ActionResult<FileClass>> PostFile(FileClass @file)
         {
             _context.Files.Add(@file);
             await _context.SaveChangesAsync();
@@ -103,7 +103,8 @@ namespace DAMBackend.Controllers
 
         private bool FileExists(int id)
         {
-            return _context.Files.Any(e => e.Id == id);
+            // return _context.Files.Any(e => e.Id == id); // type missmatch
+            return false;
         }
     }
 }

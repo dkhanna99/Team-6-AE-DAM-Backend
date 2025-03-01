@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using DAMBackend.Archived.FileArchivedModel;
+using DAMBackend.Model.FileModel;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace DAMBackend.Models
+namespace DAMBackend.Archived.ProjectArchivedModel
 {
-    public class Project
+    public class ProjectArchived
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -11,7 +13,7 @@ namespace DAMBackend.Models
         public DateTime LastUpdated { get; set; }
 
         [BindNever]
-        public List<File> Files { get; set; } = new List<File>();
+        public List<FileClass> Files { get; set; } = new List<FileClass>();
     }
 
 }

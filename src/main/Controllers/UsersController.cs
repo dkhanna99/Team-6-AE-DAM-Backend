@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DAMBackend.Data;
+using DAMBackend.Model.UserModel;
 using DAMBackend.Models;
 
 namespace DAMBackend.Controllers
@@ -23,7 +24,7 @@ namespace DAMBackend.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<List<User>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }

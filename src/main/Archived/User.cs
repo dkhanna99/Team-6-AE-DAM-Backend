@@ -1,6 +1,6 @@
-﻿namespace DAMBackend.Models
+﻿namespace DAMBackend.Archived.UserArchivedModel
 {
-    public class User
+    public class UserArchived
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

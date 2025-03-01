@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DAMBackend.Data;
+using DAMBackend.Model.ProjectModel;
 using DAMBackend.Models;
 
 namespace DAMBackend.Controllers
@@ -23,7 +24,7 @@ namespace DAMBackend.Controllers
 
         // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
+        public async Task<List<Project>> GetProjects()
         {
             return await _context.Projects.ToListAsync();
         }
@@ -47,10 +48,10 @@ namespace DAMBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProject(int id, Project project)
         {
-            if (id != project.Id)
-            {
-                return BadRequest();
-            }
+            // if (id != project.Id) // type missmatch
+            // {
+            //     return BadRequest();
+            // }
 
             _context.Entry(project).State = EntityState.Modified;
 

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using DAMBackend.auth;
 
-namespace backend.auth
+namespace DAMBackend.Controllers.Auth
 {
     [Route("api/auth")]
     [ApiController]

@@ -1,9 +1,12 @@
 using DAMBackend.Data;
-using DAMBackend.Models;
 using DAMBackend.services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using DAMBackend.Model.ProjectModel;
+using DAMBackend.Model.TagModel;
+using DAMBackend.Model.FileModel;
+using DAMBackend.Model.UserModel;
 using Xunit;
 
 namespace DAMBackend.Tests
@@ -29,7 +32,7 @@ namespace DAMBackend.Tests
             DateTime lastUpdate = DateTime.Now;
         
         // mock File
-        FileModel file = new FileModel
+        FileClass file = new FileClass
                 {
                     Name = "TestFile.jpg",
                     Extension = ".jpg",

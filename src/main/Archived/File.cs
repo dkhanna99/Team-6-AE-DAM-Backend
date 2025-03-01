@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using DAMBackend.Model.ProjectModel;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace DAMBackend.Models
+namespace DAMBackend.Archived.FileArchivedModel
 {
-    public class File
-    {
-        public int Id { get; set; }
-        public string FileName { get; set; }
-        public string FilePath { get; set; }
-        public int ProjectId { get; set; }
+    public class FileArchivedClass
 
-        [BindNever]
-        public Project Project { get; set; }
+    {
+    public int Id { get; set; }
+    public string FileName { get; set; }
+    public string FilePath { get; set; }
+    public int ProjectId { get; set; }
+
+    [BindNever] public Project Project { get; set; }
     }
 
 }
