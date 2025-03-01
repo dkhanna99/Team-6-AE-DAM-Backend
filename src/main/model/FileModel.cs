@@ -1,10 +1,13 @@
 // *** Not using Data Annotations currently as am not sure how the searching 
 // will work, fluent API is supposedly better, will ask team
+using DAMBackend.Model.TagModel;
+using DAMBackend.Model.ProjectModel;
+using DAMBackend.Model.UserModel;
 
-namespace DAMBackend.Models
+namespace DAMBackend.Model.FileModel
 {
     // some of the data might not be found on exif, so i changed some collumn to be nullable
-    public class FileModel 
+    public class FileClass // File is a property of System.IO.File
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
@@ -24,15 +27,15 @@ namespace DAMBackend.Models
         public int? FocalLength { get; set; }
         public float? Aperture { get; set; }
         public string? Copyright { get; set; }
-        public TagModel? Tags { get; set; }
+        public Tag? Tags { get; set; }
         public Guid? ProjectId { get; set; }
-        public ProjectModel? Project { get; set; }
+        public Project? Project { get; set; }
 
         public int UserId { get; set; }
         // change to be required 
 
-        public UserModel User { get; set; }
-      // public class FileModel 
+        public User User { get; set; }
+      // public class File 
 
     // EXIF QUALITIES
 

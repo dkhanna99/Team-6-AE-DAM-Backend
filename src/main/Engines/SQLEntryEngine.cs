@@ -1,8 +1,9 @@
-using DAMBackend.Models;
-
-using DAMBackend.Data;
+using DAMBackend.Model.UserModel;
 
 using Microsoft.EntityFrameworkCore;
+using DAMBackend.Model.FileModel;
+using DAMBackend.Model.ProjectModel;
+using DAMBackend.Model.TagModel;
 
 namespace DAMBackend.services
 
@@ -18,8 +19,8 @@ namespace DAMBackend.services
         }
 
         // change to async task when uploading to database
-        public UserModel AddUser(string first, string last, string email, Role role, bool stat) {
-            var user = new UserModel
+        public User AddUser(string first, string last, string email, Role role, bool stat) {
+            var user = new User
             {
                 firstName = first,
                 lastName = last,
@@ -36,7 +37,7 @@ namespace DAMBackend.services
         }
 
         // take result from extractExifData
-        public FileModel AddFile(FileModel file, UserModel user, ProjectModel project) {
+        public FileClass AddFile(FileClass file, User user, Project project) {
             if (project != null) {
                 file.Project = project;
                 file.ProjectId = project.Id;
@@ -50,8 +51,8 @@ namespace DAMBackend.services
             return file;
         }
 
-        public TagModel addTags(ProjectModel project, FileModel file, string phase, Department dep, MediaType type) {
-            var tags = new TagModel 
+        public Tag addTags(Project project, FileClass file, string phase, Department dep, MediaType type) {
+            var tags = new Tag 
             {   
                 UserId = file.UserId,
                 Phase = phase,
@@ -69,8 +70,8 @@ namespace DAMBackend.services
             return tags;
         }
 
-        public ProjectModel addProject(string name, string status, string location, string imagePath, string phase, AccessLevel al, DateTime lastUp) {
-            var project = new ProjectModel
+        public Project addProject(string name, string status, string location, string imagePath, string phase, AccessLevel al, DateTime lastUp) {
+            var project = new Project
             {
                 Name = name,
                 Status = status,

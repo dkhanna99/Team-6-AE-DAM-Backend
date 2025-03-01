@@ -1,4 +1,7 @@
-namespace DAMBackend.Models
+using DAMBackend.Model.FileModel;
+using DAMBackend.Model.ProjectModel;
+
+namespace DAMBackend.Model.UserModel
 
 {
     public enum Role {
@@ -6,7 +9,7 @@ namespace DAMBackend.Models
             Admin
         }
 
-    public class UserModel
+    public class User
     {
         public int Id {get; set;}
 
@@ -21,7 +24,7 @@ namespace DAMBackend.Models
 
         // public required string PasswordHash {get; set;} = string.Empty;
 
-        public ICollection<FileModel> Files { get; set; } = new HashSet<FileModel>();
-        public ICollection<ProjectModel> Projects { get; set;} = new HashSet<ProjectModel>();
+        public ICollection<FileClass> Files { get; set; } = new HashSet<FileClass>();
+        public ICollection<Project> Projects { get; set;} = new HashSet<Project>();
     }
 }

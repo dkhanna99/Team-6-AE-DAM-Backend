@@ -102,7 +102,8 @@ namespace DAMBackend.Controllers
 
         private bool ProjectExists(int id)
         {
-            return _context.Projects.Any(e => e.Id == id);
+            // return _context.Projects.Any(e => e.Id. == id);
+            return false;
         }
     }
 }

@@ -1,8 +1,8 @@
-namespace backend.logging
+namespace DAMBackend.Model.LoggerModel
 
 {
 
-    public class LoggerModel {
+    public class Logger {
         
         public required int Id { get; set; }
     }

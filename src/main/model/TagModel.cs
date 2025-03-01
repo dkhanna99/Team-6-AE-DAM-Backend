@@ -1,7 +1,7 @@
 using Microsoft.Identity.Client;
+using DAMBackend.Model.FileModel;
 
-namespace DAMBackend.Models
-
+namespace DAMBackend.Model.TagModel
 {
     public enum Department {
             Elec,
@@ -22,7 +22,7 @@ namespace DAMBackend.Models
 
 
 
-    public class TagModel
+    public class Tag
 
     // Metadata
 
@@ -41,7 +41,7 @@ namespace DAMBackend.Models
 
         public required Guid FileId { get; set; }
 
-        public required FileModel File { get; set; }
+        public required FileClass File { get; set; }
 
 
 

@@ -1,6 +1,9 @@
 using System.Data.SqlTypes;
 
-namespace DAMBackend.Models
+using DAMBackend.Model.FileModel;
+using DAMBackend.Model.UserModel;
+
+namespace DAMBackend.Model.ProjectModel
 
 
 {
@@ -9,7 +12,7 @@ namespace DAMBackend.Models
         Admin,
         Everyone
     }
-    public class ProjectModel 
+    public class Project 
 
     {
         public Guid Id { get; set; }
@@ -29,9 +32,9 @@ namespace DAMBackend.Models
         public required DateTime LastUpdate { get; set; }
         // change in ER diagram
 
-        public ICollection<FileModel> Files { get; set;} = new HashSet<FileModel>();
+        public ICollection<FileClass> Files { get; set;} = new HashSet<FileClass>();
 
-        public ICollection<UserModel> Users { get; set;} = new HashSet<UserModel>();
+        public ICollection<User> Users { get; set;} = new HashSet<User>();
 
     }
 }

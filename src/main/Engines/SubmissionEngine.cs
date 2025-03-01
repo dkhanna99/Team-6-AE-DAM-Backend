@@ -9,12 +9,12 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.Processing;
-using DAMBackend.Models;
+//using DAMBackend.Models;
 
 
 
 
-namespace DAMBackend.SubmissionEngine
+namespace DAMBackend.Engines.SubmissionEngine
 {
     public class SubmissionEngine : ControllerBase
     {
@@ -76,107 +76,107 @@ namespace DAMBackend.SubmissionEngine
             return Ok("All files uploaded successfully.");
         }
         
-        public FileModel ExtractExifMetadata(string imagePath)
-        {
-            var fileModel = new FileModel
-            {
-                Name = System.IO.Path.GetFileName(imagePath),
-                Extension = System.IO.Path.GetExtension(imagePath),
-                OriginalPath = imagePath,
-                ThumbnailPath = "path/to/thumbnail", // Provide actual thumbnail path
-                ViewPath = "path/to/view", // Provide actual view path
-                PixelWidth = 0, // Extract if needed
-                PixelHeight = 0, // Extract if needed
-                GPSLat = null,
-                GPSLon = null,
-                GPSAlt = null,
-                DateTimeOriginal = null,
-                Make = null,
-                Model = null,
-                FocalLength = null,
-                Aperture = null,
-                Copyright = null,
-                Tags = null,
-                ProjectId = null
-            };
+        // public FileModel ExtractExifMetadata(string imagePath)
+        // {
+        //     var fileModel = new FileModel
+        //     {
+        //         Name = System.IO.Path.GetFileName(imagePath),
+        //         Extension = System.IO.Path.GetExtension(imagePath),
+        //         OriginalPath = imagePath,
+        //         ThumbnailPath = "path/to/thumbnail", // Provide actual thumbnail path
+        //         ViewPath = "path/to/view", // Provide actual view path
+        //         PixelWidth = 0, // Extract if needed
+        //         PixelHeight = 0, // Extract if needed
+        //         GPSLat = null,
+        //         GPSLon = null,
+        //         GPSAlt = null,
+        //         DateTimeOriginal = null,
+        //         Make = null,
+        //         Model = null,
+        //         FocalLength = null,
+        //         Aperture = null,
+        //         Copyright = null,
+        //         Tags = null,
+        //         ProjectId = null
+        //     };
     
-            // Load the image
-            using (Image image = Image.Load(imagePath))
-            {
-                // EXIF Metadata
-                if (image.Metadata.ExifProfile != null)
-                {
-                    // Extract EXIF data
-                    var exif = image.Metadata.ExifProfile;
+        //     // Load the image
+        //     using (Image image = Image.Load(imagePath))
+        //     {
+        //         // EXIF Metadata
+        //         if (image.Metadata.ExifProfile != null)
+        //         {
+        //             // Extract EXIF data
+        //             var exif = image.Metadata.ExifProfile;
     
-                    // DateTimeOriginal
-                    var dateTimeOriginalTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.DateTimeOriginal);
-                    if (dateTimeOriginalTag != null)
-                    {
-                        fileModel.DateTimeOriginal = dateTimeOriginalTag.GetValue() as DateTime?;
-                    }
+        //             // DateTimeOriginal
+        //             var dateTimeOriginalTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.DateTimeOriginal);
+        //             if (dateTimeOriginalTag != null)
+        //             {
+        //                 fileModel.DateTimeOriginal = dateTimeOriginalTag.GetValue() as DateTime?;
+        //             }
     
-                    // GPS data
-                    var gpsLatTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSLatitude);
-                    if (gpsLatTag != null)
-                    {
-                        fileModel.GPSLat = (decimal?)((Rational[])gpsLatTag.GetValue())?.FirstOrDefault().ToDouble();
-                    }
+        //             // GPS data
+        //             var gpsLatTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSLatitude);
+        //             if (gpsLatTag != null)
+        //             {
+        //                 fileModel.GPSLat = (decimal?)((Rational[])gpsLatTag.GetValue())?.FirstOrDefault().ToDouble();
+        //             }
     
-                    var gpsLonTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSLongitude);
-                    if (gpsLonTag != null)
-                    {
-                        fileModel.GPSLon = (decimal?)((Rational[])gpsLonTag.GetValue())?.FirstOrDefault().ToDouble();
-                    }
+        //             var gpsLonTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSLongitude);
+        //             if (gpsLonTag != null)
+        //             {
+        //                 fileModel.GPSLon = (decimal?)((Rational[])gpsLonTag.GetValue())?.FirstOrDefault().ToDouble();
+        //             }
     
-                    var gpsAltTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSAltitude);
-                    if (gpsAltTag != null)
-                    {
-                        fileModel.GPSAlt = (decimal?)((Rational[])gpsAltTag.GetValue())?.FirstOrDefault().ToDouble();
-                    }
+        //             var gpsAltTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.GPSAltitude);
+        //             if (gpsAltTag != null)
+        //             {
+        //                 fileModel.GPSAlt = (decimal?)((Rational[])gpsAltTag.GetValue())?.FirstOrDefault().ToDouble();
+        //             }
     
-                    // Make and Model
-                    var makeTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Make);
-                    if (makeTag != null)
-                    {
-                        fileModel.Make = makeTag.GetValue()?.ToString();
-                    }
+        //             // Make and Model
+        //             var makeTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Make);
+        //             if (makeTag != null)
+        //             {
+        //                 fileModel.Make = makeTag.GetValue()?.ToString();
+        //             }
     
-                    var modelTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Model);
-                    if (modelTag != null)
-                    {
-                        fileModel.Model = modelTag.GetValue()?.ToString();
-                    }
+        //             var modelTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Model);
+        //             if (modelTag != null)
+        //             {
+        //                 fileModel.Model = modelTag.GetValue()?.ToString();
+        //             }
     
-                    // Focal Length
-                    var focalLengthTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.FocalLength);
-                    if (focalLengthTag != null)
-                    {
-                        fileModel.FocalLength = Convert.ToInt32(focalLengthTag.GetValue());
-                    }
+        //             // Focal Length
+        //             var focalLengthTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.FocalLength);
+        //             if (focalLengthTag != null)
+        //             {
+        //                 fileModel.FocalLength = Convert.ToInt32(focalLengthTag.GetValue());
+        //             }
     
-                    // Aperture
-                    var apertureTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.ApertureValue);
-                    if (apertureTag != null)
-                    {
-                        fileModel.Aperture = Convert.ToSingle(apertureTag.GetValue());
-                    }
+        //             // Aperture
+        //             var apertureTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.ApertureValue);
+        //             if (apertureTag != null)
+        //             {
+        //                 fileModel.Aperture = Convert.ToSingle(apertureTag.GetValue());
+        //             }
     
-                    // Copyright
-                    var copyrightTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Copyright);
-                    if (copyrightTag != null)
-                    {
-                        fileModel.Copyright = copyrightTag.GetValue()?.ToString();
-                    }
-                }
+        //             // Copyright
+        //             var copyrightTag = exif.Values.FirstOrDefault(tag => tag.Tag == ExifTag.Copyright);
+        //             if (copyrightTag != null)
+        //             {
+        //                 fileModel.Copyright = copyrightTag.GetValue()?.ToString();
+        //             }
+        //         }
     
-                // Set Pixel Width and Height
-                fileModel.PixelWidth = image.Width;
-                fileModel.PixelHeight = image.Height;
-            }
+        //         // Set Pixel Width and Height
+        //         fileModel.PixelWidth = image.Width;
+        //         fileModel.PixelHeight = image.Height;
+        //     }
     
-            return fileModel;
-        }
+        //     return fileModel;
+        // }
 
 
         public  void PrintImageMetadata(string imagePath)
