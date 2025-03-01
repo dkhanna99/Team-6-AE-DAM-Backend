@@ -1,7 +1,4 @@
-using MySqlConnector;
-
 using System;
-using System.Collections.Generic;
 
 
 namespace DAMBackend.SearchEngine

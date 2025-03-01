@@ -1,4 +1,5 @@
-﻿using DAMBackend.Archived.FileArchivedModel;
+﻿using System;
+using System.Collections.Generic;
 using DAMBackend.Model.FileModel;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

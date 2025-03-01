@@ -1,6 +1,4 @@
-using DAMBackend.Data;
 using DAMBackend.services;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 using DAMBackend.Model.ProjectModel;

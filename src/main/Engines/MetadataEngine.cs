@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System;
 namespace DAMBackend.MetadataEngine
 {
     public class MetadataManager

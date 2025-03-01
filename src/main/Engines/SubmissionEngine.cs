@@ -6,9 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Metadata;
-using SixLabors.ImageSharp.Metadata.Profiles.Exif;
-using SixLabors.ImageSharp.Processing;
 //using DAMBackend.Models;
 
 

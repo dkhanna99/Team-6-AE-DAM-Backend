@@ -1,12 +1,10 @@
 using DAMBackend.Model.UserModel;
-
-using Microsoft.EntityFrameworkCore;
 using DAMBackend.Model.FileModel;
 using DAMBackend.Model.ProjectModel;
 using DAMBackend.Model.TagModel;
+using System;
 
 namespace DAMBackend.services
-
 {
     public class SQLEntryEngine {
 
